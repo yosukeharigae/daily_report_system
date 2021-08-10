@@ -33,17 +33,16 @@ public class EmployeesShowServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	EntityManager em = DBUtil.createEntityManager();
+		 EntityManager em = DBUtil.createEntityManager();
 
-	Employee e =em.find(Employee.class,Integer.parseInt(request.getParameter("id")));
+	        Employee e = em.find(Employee.class, Integer.parseInt(request.getParameter("id")));
 
-	em.close();
+	        em.close();
 
-	request.setAttribute("employee", e);
+	        request.setAttribute("employee", e);
 
-	RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/show.jsp");
-    rd.forward(request, response);
+	        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/show.jsp");
+	        rd.forward(request, response);
+	    }
+
 	}
-
-}
