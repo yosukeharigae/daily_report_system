@@ -67,11 +67,7 @@ public class LoginFilter implements Filter {
 			}
 		}
 
-		chain.doFilter(request, response);
-		// TODO Auto-generated method stub
-		// place your code here
 
-		// pass the request along the filter chain
 		chain.doFilter(request, response);
 	}
 
