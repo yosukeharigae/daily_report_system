@@ -21,12 +21,12 @@ import models.Employee;
 @WebFilter("/*")
 public class LoginFilter implements Filter {
 
-    /**
-     * Default constructor.
-     */
-    public LoginFilter() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public LoginFilter() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
@@ -38,35 +38,33 @@ public class LoginFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String context_path =((HttpServletRequest)request).getContextPath();
-		String servlet_path =((HttpServletRequest)request).getServletPath();
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		String context_path = ((HttpServletRequest) request).getContextPath();
+		String servlet_path = ((HttpServletRequest) request).getServletPath();
 
-		if(!servlet_path.matches("/css.*")){
-			HttpSession session = ((HttpServletRequest)request).getSession();
+		if (!servlet_path.matches("/css.*")) { // CSSフォルダ内は認証処理から除外する
+			HttpSession session = ((HttpServletRequest) request).getSession();
 
-			Employee e = (Employee)session.getAttribute("login_employee");
+			Employee e = (Employee) session.getAttribute("login_employee");
 
-			if(!servlet_path.equals("/login")){
-
-				if(e == null){
-					((HttpServletResponse)response).sendRedirect(context_path+"/login");
+			if (!servlet_path.equals("/login")) { // ログイン画面以外について
+				if (e == null) {
+					((HttpServletResponse) response).sendRedirect(context_path + "/login");
 					return;
 				}
-			if(servlet_path.matches("/employee.*") && e.getAdmin_flag() == 0) {
-				((HttpServletResponse)response).sendRedirect(context_path + "/");
-			return;
-			}
 
-			}else{
-				if(e !=null){
-					((HttpServletResponse)response).sendRedirect(context_path + "/");
+				if (servlet_path.matches("/employees.*") && e.getAdmin_flag() == 0) {
+					((HttpServletResponse) response).sendRedirect(context_path + "/");
 					return;
-
+				}
+			} else {
+				if (e != null) {
+					((HttpServletResponse) response).sendRedirect(context_path + "/");
+					return;
 				}
 			}
 		}
-
 
 		chain.doFilter(request, response);
 	}
@@ -75,7 +73,6 @@ public class LoginFilter implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
 	}
 
 }
