@@ -40,53 +40,57 @@ public class EmployeesUpdateServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String _token = request.getParameter("_token");
-		if (_token != null && _token.equals(request.getSession().getId())) {
-			EntityManager em = DBUtil.createEntityManager();
+        if(_token != null && _token.equals(request.getSession().getId())) {
+            EntityManager em = DBUtil.createEntityManager();
 
-			Employee e = em.find(Employee.class, (Integer) (request.getSession().getAttribute("employee_id")));
+            Employee e = em.find(Employee.class, (Integer)(request.getSession().getAttribute("employee_id")));
 
-			Boolean codeDuplicateCheckFlag = true;
-			if (e.getCode().equals(request.getParameter("code"))) {
-				codeDuplicateCheckFlag = false;
-			} else {
-				e.setCode(request.getParameter("code"));
-			}
+            Boolean codeDuplicateCheckFlag = true;
+            if(e.getCode().equals(request.getParameter("code"))) {
+                codeDuplicateCheckFlag = false;
+            } else {
+                e.setCode(request.getParameter("code"));
+            }
 
-			Boolean passwordCheckFlag = true;
-			String password = request.getParameter("password");
-			if (password == null || password.equals("")) {
-				passwordCheckFlag = false;
-			} else {
-			}
-			e.setPassword(
-					EncryptUtil.getPasswordEncrypt(password, (String) this.getServletContext().getAttribute("pepper")));
+            Boolean passwordCheckFlag = true;
+            String password = request.getParameter("password");
+            if(password == null || password.equals("")) {
+                passwordCheckFlag = false;
+            } else {
+                e.setPassword(
+                        EncryptUtil.getPasswordEncrypt(
+                                password,
+                                (String)this.getServletContext().getAttribute("pepper")
+                                )
+                        );
+            }
 
-			e.setName(request.getParameter("name"));
-			e.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));
-			e.setUpdated_at(new Timestamp(System.currentTimeMillis()));
-			e.setDelete_flag(0);
+            e.setName(request.getParameter("name"));
+            e.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));
+            e.setUpdated_at(new Timestamp(System.currentTimeMillis()));
+            e.setDelete_flag(0);
 
-			List<String> errors = EmployeeValidator.validate(e, codeDuplicateCheckFlag, passwordCheckFlag);
-			if (errors.size() > 0) {
-				em.close();
+            List<String> errors = EmployeeValidator.validate(e, codeDuplicateCheckFlag, passwordCheckFlag);
+            if(errors.size() > 0) {
+                em.close();
 
-				request.setAttribute("_token", request.getSession().getId());
-				request.setAttribute("employee", e);
-				request.setAttribute("errors", errors);
+                request.setAttribute("_token", request.getSession().getId());
+                request.setAttribute("employee", e);
+                request.setAttribute("errors", errors);
 
-				RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/edit.jsp");
-				rd.forward(request, response);
-			} else {
-				em.getTransaction().begin();
-				em.getTransaction().commit();
-				em.close();
-				request.getSession().setAttribute("flush", "更新が完了しました。");
+                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/edit.jsp");
+                rd.forward(request, response);
+            } else {
+                em.getTransaction().begin();
+                em.getTransaction().commit();
+                em.close();
+                request.getSession().setAttribute("flush", "更新が完了しました。");
 
-				request.getSession().removeAttribute("employee_id");
+                request.getSession().removeAttribute("employee_id");
 
-				response.sendRedirect(request.getContextPath() + "/employees/index");
-			}
-		}
-	}
+                response.sendRedirect(request.getContextPath() + "/employees/index");
+            }
+        }
+    }
 
 }

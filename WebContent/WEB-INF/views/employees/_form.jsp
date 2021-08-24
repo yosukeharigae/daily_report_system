@@ -23,11 +23,9 @@
 <br />
 <br />
 
-<label for="password">パスワード</label>
-<br />
+<label for="password">パスワード</label><br />
 <input type="password" name="password" />
-<br />
-<br />
+<br /><br />
 
 <label for="admin_flag">権限</label>
 <br />
